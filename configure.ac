@@ -32,7 +32,7 @@ AC_CONFIG_LIBOBJ_DIR([lib])
 # Automake 1.15 and gnulib don't get along: gnulib has some strange error
 # in the way it handles getloadavg.c which causes make distcheck to fail.
 # http://lists.gnu.org/archive/html/bug-gnulib/2018-06/msg00024.html
-AM_INIT_AUTOMAKE([1.16.1 foreign -Werror -Wall])
+AM_INIT_AUTOMAKE([1.15.1 foreign -Wall])
 
 # Checks for programs.
 AC_USE_SYSTEM_EXTENSIONS
