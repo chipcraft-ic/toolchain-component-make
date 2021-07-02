@@ -60,7 +60,7 @@ AC_MINIX
 AC_C_BIGENDIAN
 
 # Enable gettext, in "external" mode.
-AM_GNU_GETTEXT_VERSION([0.19.4])
+AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 
 # This test must come as early as possible after the compiler configuration
@@ -170,38 +170,7 @@ AC_FUNC_CLOSEDIR_VOID
 # dir.c and our glob.c use dirent.d_type if available
 AC_STRUCT_DIRENT_D_TYPE
 
-# See if the user wants to add (or not) GNU Guile support
-AC_ARG_WITH([guile], [AS_HELP_STRING([--with-guile],
-            [Support GNU Guile for embedded scripting])])
-
-# Annoyingly, each version of Guile comes with it's own PC file so we have to
-# specify them as individual packages.  Ugh.
-PKG_PROG_PKG_CONFIG
-
-AS_IF([test "x$with_guile" != xno],
-[ guile_versions="3.0 2.2 2.0 1.8"
-  guile_version=no
-  have_guile=no
-  AC_MSG_CHECKING([for GNU Guile])
-  for v in $guile_versions; do
-    PKG_CHECK_EXISTS([guile-$v], [guile_version=$v; have_guile=yes; break], [])
-  done
-  AC_MSG_RESULT([$guile_version])
-  AS_IF([test "$have_guile" = yes],
-  [ PKG_CHECK_MODULES(GUILE, [guile-$guile_version])
-    # Unfortunately Guile requires a C99 compiler but GNU make doesn't, so
-    # verify we can actually compile the header.
-    keep_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$CPPFLAGS $pkg_cv_GUILE_CFLAGS"
-    AC_CHECK_HEADER([libguile.h],
-                    [AC_DEFINE([HAVE_GUILE], [1], [Embed GNU Guile support])],
-                    [have_guile=no],
-                    [/* Avoid configuration error warnings. */])
-    CPPFLAGS="$keep_CPPFLAGS"
-  ])
-])
-
-AM_CONDITIONAL([HAVE_GUILE], [test "$have_guile" = "yes"])
+AM_CONDITIONAL([HAVE_GUILE], [false])
 
 AC_CHECK_DECLS([sys_siglist, _sys_siglist, __sys_siglist], , ,
   [AC_INCLUDES_DEFAULT
@@ -524,8 +493,7 @@ AS_IF([test "x$make_cv_posix_spawn" = xno && test "x$user_posix_spawn" = xyes],
 ])
 
 # Specify what files are to be created.
-AC_CONFIG_FILES([Makefile build.cfg lib/Makefile po/Makefile.in doc/Makefile \
-                 tests/config-flags.pm])
+AC_CONFIG_FILES([Makefile build.cfg lib/Makefile po/Makefile.in])
 # We don't need this: the standard automake output suffices for POSIX systems.
 #mk/Posix.mk
 
