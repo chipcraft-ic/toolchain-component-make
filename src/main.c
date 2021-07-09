@@ -1060,6 +1060,7 @@ reset_jobserver (void)
   jobserver_auth = NULL;
 }
 
+#pragma GCC diagnostic ignored "-Warray-bounds" /* false-positive */
 #ifdef _AMIGA
 int
 main (int argc, char **argv)
@@ -1748,6 +1749,7 @@ main (int argc, char **argv, char **envp)
 
       /* Now allocate a buffer big enough and fill it.  */
       p = value = alloca (len);
+      p[0] = '\0';
       for (cv = command_variables; cv != 0; cv = cv->next)
         {
           v = cv->variable;
@@ -1758,7 +1760,11 @@ main (int argc, char **argv, char **envp)
           p = quote_for_env (p, v->value);
           *p++ = ' ';
         }
-      p[-1] = '\0';             /* Kill the final space and terminate.  */
+      if ( 0 != cv )
+        {
+          /* Remove last space, if space would actually be there due to loop. */
+          p[-1] = '\0';
+        }
 
       /* Define an unchangeable variable with a name that no POSIX.2
          makefile could validly use for its own variable.  */

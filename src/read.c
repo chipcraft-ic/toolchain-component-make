@@ -563,6 +563,8 @@ parse_var_assignment (const char *line, int targvar, struct vmodifiers *vmod)
 
    SET_DEFAULT is true if we are allowed to set the default goal.  */
 
+#pragma GCC diagnostic ignored "-Wstringop-overflow" /* false-positive */
+#pragma GCC diagnostic ignored "-Warray-bounds" /* false-positive */
 static void
 eval (struct ebuffer *ebuf, int set_default)
 {
@@ -2475,6 +2477,7 @@ find_percent (char *pattern)
    modify the string a new version will be added to the string cache and
    *STRING will be set to that.  */
 
+#pragma GCC diagnostic ignored "-Wreturn-local-addr" /* false-positive */
 const char *
 find_percent_cached (const char **string)
 {
@@ -2544,7 +2547,7 @@ find_percent_cached (const char **string)
   /* If we didn't find a %, return NULL.  Otherwise return a ptr to it.  */
   return p;
 }
-
+
 /* Find the next line of text in an eval buffer, combining continuation lines
    into one line.
    Return the number of actual lines read (> 1 if continuation lines).
