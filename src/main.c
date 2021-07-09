@@ -1944,6 +1944,7 @@ main (int argc, char **argv, char **envp)
         }
 
       p = value = alloca (len);
+      p[0] = '\0';
       for (i = 0; i < eval_strings->idx; ++i)
         {
           strcpy (p, "--eval=");
@@ -1951,7 +1952,11 @@ main (int argc, char **argv, char **envp)
           p = quote_for_env (p, eval_strings->list[i]);
           *(p++) = ' ';
         }
-      p[-1] = '\0';
+      if ( 0 < i )
+        {
+          /* Remove last space, if space would actually be there due to loop. */
+          p[-1] = '\0';
+        }
 
       define_variable_cname ("-*-eval-flags-*-", value, o_automatic, 0);
     }
