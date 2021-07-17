@@ -1582,11 +1582,11 @@ windows32_openpipe (int *pipedes, int errfd, pid_t *pid_p, char **command_argv, 
       if (hIn == INVALID_HANDLE_VALUE)
         {
           ON (error, NILF,
-              _("windows32_openpipe: DuplicateHandle(In) failed (e=%ld)\n"), e);
+              _("windows32_openpipe: DuplicateHandle(In) failed (e=%lu)\n"), e);
           return -1;
         }
     }
-  tmpErr = (HANDLE)_get_osfhandle (errfd);
+  tmpErr = (HANDLE)(intptr_t)_get_osfhandle (errfd);
   if (DuplicateHandle (GetCurrentProcess (), tmpErr,
                        GetCurrentProcess (), &hErr,
                        0, TRUE, DUPLICATE_SAME_ACCESS) == FALSE)
@@ -1606,14 +1606,14 @@ windows32_openpipe (int *pipedes, int errfd, pid_t *pid_p, char **command_argv, 
       if (hErr == INVALID_HANDLE_VALUE)
         {
           ON (error, NILF,
-              _("windows32_openpipe: DuplicateHandle(Err) failed (e=%ld)\n"), e);
+              _("windows32_openpipe: DuplicateHandle(Err) failed (e=%lu)\n"), e);
           return -1;
         }
     }
 
   if (! CreatePipe (&hChildOutRd, &hChildOutWr, &saAttr, 0))
     {
-      ON (error, NILF, _("CreatePipe() failed (e=%ld)\n"), GetLastError());
+      ON (error, NILF, _("CreatePipe() failed (e=%lu)\n"), GetLastError());
       return -1;
     }
 

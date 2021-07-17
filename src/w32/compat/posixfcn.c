@@ -185,7 +185,7 @@ create_mutex (void)
   secattr.lpSecurityDescriptor = NULL; /* use default security descriptor */
   secattr.bInheritHandle = TRUE;
 
-  hmutex = (intptr_t)CreateMutex (&secattr, FALSE, NULL);
+  hmutex = (intptr_t)(HANDLE)CreateMutex (&secattr, FALSE, NULL);
   if (!hmutex)
     {
       DWORD err = GetLastError ();
@@ -204,8 +204,8 @@ create_mutex (void)
 int
 same_stream (FILE *f1, FILE *f2)
 {
-  HANDLE fh1 = (HANDLE)_get_osfhandle (fileno (f1));
-  HANDLE fh2 = (HANDLE)_get_osfhandle (fileno (f2));
+  HANDLE fh1 = (HANDLE)(intptr_t)_get_osfhandle (fileno (f1));
+  HANDLE fh2 = (HANDLE)(intptr_t)_get_osfhandle (fileno (f2));
 
   /* Invalid file descriptors get treated as different streams.  */
   if (fh1 && fh1 != INVALID_HANDLE_VALUE
@@ -459,11 +459,14 @@ dlclose (void *handle)
 
 /* MS runtime's isatty returns non-zero for any character device,
    including the null device, which is not what we want.  */
+#undef isatty
 int
 isatty (int fd)
 {
-  HANDLE fh = (HANDLE) _get_osfhandle (fd);
+  HANDLE fh = (HANDLE)(intptr_t) _get_osfhandle (fd);
   DWORD con_mode;
+
+  ( void ) fd;
 
   if (fh == INVALID_HANDLE_VALUE)
     {
@@ -484,5 +487,7 @@ ttyname (int fd)
      sophisticated implementation should test whether FD is open for
      input or output.  We can do that by looking at the mode returned
      by GetConsoleMode.  */
-  return "CONOUT$";
+  static char result[] = { 'C', 'O', 'N', 'O', 'U', 'T', '$', '\0' };
+  ( void ) fd;
+  return (char *)result;
 }

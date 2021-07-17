@@ -162,6 +162,7 @@ set_append_mode (int fd)
       EINTRLOOP(r, fcntl (fd, F_SETFL, flags | O_APPEND));
     }
 #endif
+  ( void ) fd;
 }
 
 

@@ -379,6 +379,9 @@ static const char *_getopt_initialize (int, char *const *, const char *);
 static const char *
 _getopt_initialize (int argc, char *const *argv, const char *optstring)
 {
+  ( void ) argc;
+  ( void ) argv;
+
   /* Start processing options with ARGV-element 1 (since ARGV-element 0
      is the program name); the sequence of previously skipped
      non-option ARGV-elements is empty.  */
@@ -677,17 +680,22 @@ _getopt_internal (int argc, char *const *argv, const char *optstring,
 	      else
 		{
 		  if (opterr)
-		   if (argv[optind - 1][1] == '-')
-		    /* --option */
-		    fprintf (stderr,
-		     _("%s: option '--%s' doesn't allow an argument\n"),
-		     argv[0], pfound->name);
-		   else
-		    /* +option or -option */
-		    fprintf (stderr,
-		     _("%s: option '%c%s' doesn't allow an argument\n"),
-		     argv[0], argv[optind - 1][0], pfound->name);
-
+            {
+               if (argv[optind - 1][1] == '-')
+                {
+                  /* --option */
+                  fprintf (stderr,
+                   _("%s: option '--%s' doesn't allow an argument\n"),
+                   argv[0], pfound->name);
+                }
+               else
+                {
+                  /* +option or -option */
+                  fprintf (stderr,
+                   _("%s: option '%c%s' doesn't allow an argument\n"),
+                   argv[0], argv[optind - 1][0], pfound->name);
+                }
+            }
 		  nextchar += strlen (nextchar);
 
 		  optopt = pfound->val;

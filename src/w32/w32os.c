@@ -57,7 +57,7 @@ jobserver_setup (int slots)
       DWORD err = GetLastError ();
       const char *estr = map_windows32_error_to_string (err);
       ONS (fatal, NILF,
-           _("creating jobserver semaphore: (Error %ld: %s)"), err, estr);
+           _("creating jobserver semaphore: (Error %lu: %s)"), err, estr);
     }
 
   return 1;
@@ -76,7 +76,7 @@ jobserver_parse_auth (const char *auth)
       DWORD err = GetLastError ();
       const char *estr = map_windows32_error_to_string (err);
       fatal (NILF, strlen (auth) + INTSTR_LENGTH + strlen (estr),
-             _("internal error: unable to open jobserver semaphore '%s': (Error %ld: %s)"),
+             _("internal error: unable to open jobserver semaphore '%s': (Error %lu: %s)"),
              auth, err, estr);
     }
   DB (DB_JOBS, (_("Jobserver client (semaphore %s)\n"), auth));
@@ -120,7 +120,7 @@ jobserver_release (int is_fatal)
           DWORD err = GetLastError ();
           const char *estr = map_windows32_error_to_string (err);
           ONS (fatal, NILF,
-               _("release jobserver semaphore: (Error %ld: %s)"), err, estr);
+               _("release jobserver semaphore: (Error %lu: %s)"), err, estr);
         }
       perror_with_name ("release_jobserver_semaphore", "");
     }
@@ -150,10 +150,12 @@ jobserver_signal ()
 
 void jobserver_pre_child (int recursive)
 {
+    ( void ) recursive;
 }
 
 void jobserver_post_child (int recursive)
 {
+    ( void ) recursive;
 }
 
 void
@@ -169,6 +171,8 @@ jobserver_acquire (int timeout)
     HANDLE *handles;
     DWORD dwHandleCount;
     DWORD dwEvent;
+
+    ( void ) timeout;
 
     handles = xmalloc(process_table_actual_size() * sizeof(HANDLE));
 
@@ -191,7 +195,7 @@ jobserver_acquire (int timeout)
         DWORD err = GetLastError ();
         const char *estr = map_windows32_error_to_string (err);
         ONS (fatal, NILF,
-             _("semaphore or child process wait: (Error %ld: %s)"),
+             _("semaphore or child process wait: (Error %lu: %s)"),
              err, estr);
       }
 
@@ -202,7 +206,7 @@ jobserver_acquire (int timeout)
 void
 fd_inherit(int fd)
 {
-  HANDLE fh = (HANDLE)_get_osfhandle(fd);
+  HANDLE fh = (HANDLE)(intptr_t)_get_osfhandle(fd);
 
   if (fh && fh != INVALID_HANDLE_VALUE)
         SetHandleInformation(fh, HANDLE_FLAG_INHERIT, 1);
@@ -211,7 +215,7 @@ fd_inherit(int fd)
 void
 fd_noinherit(int fd)
 {
-  HANDLE fh = (HANDLE)_get_osfhandle(fd);
+  HANDLE fh = (HANDLE)(intptr_t)_get_osfhandle(fd);
 
   if (fh && fh != INVALID_HANDLE_VALUE)
         SetHandleInformation(fh, HANDLE_FLAG_INHERIT, 0);

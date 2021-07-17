@@ -368,7 +368,7 @@ create_batch_file (char const *base, int unixy, int *fd)
   *fd = -1;
   if (error_string == NULL)
     error_string = _("Cannot create a temporary file\n");
-  O (fatal, NILF, error_string);
+  OS (fatal, NILF, "%s", error_string);
 
   /* not reached */
   return NULL;
@@ -825,7 +825,7 @@ reap_children (int block, int err)
                   {
                     DWORD e = GetLastError ();
                     fprintf (stderr,
-                             "Determine main thread ID (Error %ld: %s)\n",
+                             "Determine main thread ID (Error %lu: %s)\n",
                              e, map_windows32_error_to_string (e));
                   }
                 else

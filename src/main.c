@@ -862,7 +862,7 @@ handle_runtime_exceptions (struct _EXCEPTION_POINTERS *exinfo)
       sprintf (errmsg,
                _("%s: Interrupt/Exception caught (code = 0x%lx, addr = 0x%p)\n"),
                prg, exrec->ExceptionCode, exrec->ExceptionAddress);
-      fprintf (stderr, errmsg);
+      fprintf (stderr, "%s", errmsg);
       exit (255);
     }
 
@@ -901,7 +901,7 @@ handle_runtime_exceptions (struct _EXCEPTION_POINTERS *exinfo)
 #endif
 
   /* Write the error to stderr too */
-  fprintf (stderr, errmsg);
+  fprintf (stderr, "%s", errmsg);
 
 #ifdef DEBUG
   return EXCEPTION_CONTINUE_SEARCH;

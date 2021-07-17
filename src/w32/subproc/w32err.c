@@ -48,7 +48,7 @@ map_windows32_error_to_string (DWORD ercode) {
         /* Fill message buffer with a default message in
          * case FormatMessage fails
          */
-    wsprintf (szMessageBuffer, "Error %ld\n", ercode);
+    wsprintf (szMessageBuffer, "Error %lu\n", ercode);
 
         /*
          *  Special code for winsock error handling.
@@ -67,7 +67,7 @@ map_windows32_error_to_string (DWORD ercode) {
                         FreeLibrary(hModule);
                 }
 #else
-                O (fatal, NILF, szMessageBuffer);
+                OS (fatal, NILF, "%s", szMessageBuffer);
 #endif
         } else {
                 /*
