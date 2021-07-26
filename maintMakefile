@@ -35,7 +35,7 @@ PERLFLAGS := -w
 MAKE_CFLAGS := -Wall -Wextra -Werror -Wwrite-strings -Wshadow \
 	-Wdeclaration-after-statement -Wbad-function-cast -Wformat-security \
 	-Wtype-limits -Wunused-but-set-parameter -Wlogical-op -Wpointer-arith \
-	-Wignored-qualifiers -Wformat-signedness -Wduplicated-cond
+	-Wignored-qualifiers
 
 AM_CFLAGS += $(MAKE_CFLAGS)
 
